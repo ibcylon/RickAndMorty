@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 // https://www.youtube.com/watch?v=Eo3WkbUV-fU&t=796&ab_channel=EssentialDeveloper
 
@@ -49,11 +48,12 @@ class AuthenticatedHTTPClientDecorator: HTTPClient {
     }
   }
 }
+struct InvalidHTTPResponseError: Error {}
 
 extension URLSession: HTTPClient {
-  struct InvalidHTTPResponseError: Error {}
 
   func perform(_ request: URLRequest, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) {
+    print(request.description)
     let task = dataTask(with: request) { data, response, error in
       guard let data = data, let httpResponse = response as? HTTPURLResponse else {
         completion(.failure(InvalidHTTPResponseError()))
