@@ -7,23 +7,53 @@
 
 import UIKit
 
-class RMTabBarController: UITabBarController {
+final class RMTabBarController: UITabBarController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+  override func viewDidLoad() {
+    super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+    makeTabBar()
+  }
+
+  func makeTabBar() {
+    self.viewControllers = makeTabBarItem()
+  }
+  enum Feature: String {
+    case episode
+    case character
+    case location
+
+    var image: String {
+      switch self {
+      case .episode:
+        return "play.circle"
+      case .character:
+        return "person.circle"
+      case .location:
+        return "map"
+      }
     }
-    
+  }
+  private func makeTabBarItem() -> [UIViewController] {
+    let characterController = CharacterSearchViewController()
+    let characterNavigation = UINavigationController(rootViewController: characterController)
+    characterNavigation.tabBarItem = makeTabItem(.character)
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    let episodeNavigation = UINavigationController(rootViewController: UIViewController())
+    episodeNavigation.tabBarItem = makeTabItem(.episode)
 
+    let locationController = UIViewController()
+    let locationNavigation = UINavigationController(rootViewController: locationController)
+    locationNavigation.tabBarItem = makeTabItem(.location)
+
+    return [characterNavigation, episodeNavigation, locationNavigation]
+  }
+
+  private func makeTabItem(_ feature: Feature) -> UITabBarItem {
+    UITabBarItem(
+      title: feature.rawValue,
+      image: UIImage(systemName: feature.image),
+      selectedImage: UIImage(systemName: feature.image + ".fill"))
+  }
 }
