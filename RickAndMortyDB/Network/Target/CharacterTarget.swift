@@ -11,6 +11,7 @@ import RxSwift
 
 protocol RMServiceType {
   func getAllItems() -> Observable<RMInfoModel<RMCharacter>>
+  func getNextPage(with nextPageURL: URL) -> Observable<RMInfoModel<RMCharacter>>
 }
 
 class RMCharacterService: RMServiceType {
@@ -23,6 +24,15 @@ class RMCharacterService: RMServiceType {
 
   func getAllItems() -> Observable<RMInfoModel<RMCharacter>> {
     let request = RequestWithURL(url: target.url).request()
+    return performInfoList(request)
+  }
+
+  func getNextPage(with nextPageURL: URL) -> Observable<RMInfoModel<RMCharacter>> {
+    let request = RequestWithURL(url: nextPageURL).request()
+    return performInfoList(request)
+  }
+
+  private func performInfoList(_ request: URLRequest) -> Observable<RMInfoModel<RMCharacter>> {
     return .create { [weak self] observer in
       self?.client.perform(request) { result in
         switch result {
