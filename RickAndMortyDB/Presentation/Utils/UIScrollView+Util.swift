@@ -13,7 +13,7 @@ extension UIScrollView {
     let totalContentHeight = self.contentSize.height
     let totalScrollViewFixedHeight = self.frame.size.height
 
-    if offset >= (totalContentHeight - totalScrollViewFixedHeight - 129) {
+    if offset >= (totalContentHeight - totalScrollViewFixedHeight) {
       print("need fetching data")
       return true
     }

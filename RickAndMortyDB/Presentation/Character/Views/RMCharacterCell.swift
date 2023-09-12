@@ -82,17 +82,6 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
   func configure(with viewModel: RMCharacterCollectionViewCellViewModel) {
     self.nameLabel.text = viewModel.name
     self.statusLabel.text = viewModel.statusText
-    viewModel.fetchImage(completion: { [weak self] result in
-      switch result {
-      case .success(let data):
-        let image = UIImage(data: data)
-        DispatchQueue.main.async {
-          self?.imageView.image = image
-        }
-      case .failure(let error):
-        self?.imageView.image = nil
-        print(error.localizedDescription)
-      }
-    })
+    self.imageView.setImage(url: viewModel.imageURL)
   }
 }

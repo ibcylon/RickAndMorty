@@ -26,7 +26,7 @@ final class RMFooterLoadingCollectionReusableView: UICollectionReusableView {
   }
 
   private func setUpViews() {
-    backgroundColor = .systemBlue
+    backgroundColor = .white
 
     self.addSubview(progressView)
 

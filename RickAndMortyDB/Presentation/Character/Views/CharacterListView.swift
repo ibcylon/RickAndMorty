@@ -14,7 +14,7 @@ import SnapKit
 
 class CharacterListView: UIView {
 
-  private let viewModel: CharacterListViewModel
+  var viewModel: CharacterListViewModel!
   private var disposeBag = DisposeBag()
   private let progressView: UIActivityIndicatorView = {
     let progressView = UIActivityIndicatorView(style: .large)
@@ -35,11 +35,9 @@ class CharacterListView: UIView {
     return collectionView
   }()
 
-  init(viewModel: CharacterListViewModel) {
-    self.viewModel = viewModel
+  init() {
     super.init(frame: .zero)
     setupView()
-    bind()
   }
 
   required init?(coder: NSCoder) {
@@ -65,7 +63,7 @@ class CharacterListView: UIView {
     collectionView.delegate = self
   }
 
-  private func bind() {
+  func bind() {
     let triggerSubject = PublishSubject<Void>()
     let hasNextPageRelay = BehaviorRelay<Bool>(value: true)
     
@@ -93,10 +91,12 @@ class CharacterListView: UIView {
       .filter { $0 }
       .map { _ in }
       .asDriver(onErrorDriveWith: .empty())
+    
+
     let input = CharacterListViewModel.Input(
-      trigger: triggerSubject
-        .asDriver(onErrorDriveWith: .empty()),
-      morePagetrigger: pagingTrigger
+      trigger: triggerSubject.asDriver(onErrorDriveWith: .empty()),
+      morePagetrigger: pagingTrigger,
+      itemSelected: collectionView.rx.itemSelected.asDriver()
     )
     let output = viewModel.transform(input: input)
 
@@ -113,6 +113,10 @@ class CharacterListView: UIView {
 
       output.hasNextPage
       .drive(hasNextPageRelay)
+      .disposed(by: disposeBag)
+
+    output.toItemDetail
+      .drive()
       .disposed(by: disposeBag)
 
     triggerSubject.onNext(())
