@@ -35,11 +35,13 @@ final class RMTabBarController: UITabBarController {
     }
   }
   private func makeTabBarItem() -> [UIViewController] {
-    let characterController = CharacterSearchViewController()
-    let characterNavigation = UINavigationController(rootViewController: characterController)
+
+    let characterNavigation = UINavigationController()
+    let characterService = RMCharacterService(client: URLSession.shared)
+    let characterListNavigator = CharacterListNavigator(navigationController: characterNavigation, service: characterService)
     characterNavigation.tabBarItem = makeTabItem(.character)
-
-
+    characterListNavigator.toList()
+    
     let episodeNavigation = UINavigationController(rootViewController: UIViewController())
     episodeNavigation.tabBarItem = makeTabItem(.episode)
 
