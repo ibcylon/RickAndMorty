@@ -12,8 +12,9 @@ import RxCocoa
 
 final class CharacterListViewModel: ViewModelType {
   private let service: RMServiceType
-  private let navigationObserver: AnyObserver<Void>
-  init(service: RMServiceType, observer: AnyObserver<Void>) {
+  private let navigationObserver: AnyObserver<RMCharacter>
+
+  init(service: RMServiceType, observer: AnyObserver<RMCharacter>) {
     self.service = service
     self.navigationObserver = observer
   }
@@ -47,7 +48,8 @@ final class CharacterListViewModel: ViewModelType {
 
     let hasNextPage = nextPageSubject.map { $0 != nil }
 
-    let pagingTrigger = input.morePagetrigger.withLatestFrom(nextPageSubject.asDriver(onErrorDriveWith: .empty()))
+    let pagingTrigger = input.morePagetrigger
+      .withLatestFrom(nextPageSubject.asDriver(onErrorDriveWith: .empty()))
       .compactMap { $0 }
       .compactMap { URL(string: $0) }
       .distinctUntilChanged()
@@ -72,9 +74,10 @@ final class CharacterListViewModel: ViewModelType {
       .map { [CharacterSection(header: "Character", items: $0)] }
       .asDriver(onErrorJustReturn: [])
 
-    let itemSelected = input.itemSelected.withLatestFrom(list) { $1[$0.section].items[$0.item] }
-      .do(onNext: { [weak self] _ in
-        self?.navigationObserver.onNext(())
+    let itemSelected = input.itemSelected
+      .withLatestFrom(list) { $1[$0.section].items[$0.item] }
+      .do(onNext: { [weak self] item in
+        self?.navigationObserver.onNext(item)
       })
 
     return Output(

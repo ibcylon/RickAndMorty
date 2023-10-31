@@ -26,3 +26,11 @@ extension Reactive where Base: UIViewController {
         return ControlEvent(events: source)
     }
 }
+
+extension ObservableType {
+  func asDriverOnErrorJustComplete() -> Driver<Element> {
+    asDriver { _ in
+      return Driver.empty()
+    }
+  }
+}

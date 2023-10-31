@@ -9,6 +9,7 @@ import UIKit
 
 import SnapKit
 import RxSwift
+import RxCocoa
 
 final class CharacterSearchViewController: UIViewController {
   private let characterListView: CharacterListView
@@ -24,11 +25,18 @@ final class CharacterSearchViewController: UIViewController {
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+
+
+  deinit {
+    RMLogger.dataLogger.debug("\(#function) \(self)")
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
     setUpViews()
     bind()
+    setAlert()
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -50,11 +58,49 @@ final class CharacterSearchViewController: UIViewController {
   func bind() {
     self.characterListView.viewModel = self.listViewModel
     self.characterListView.bind()
-    
-    let input = CharacterSearchViewModel.Input(toItemTrigger: self.rx.viewWillAppear.map { _ in }.asDriver(onErrorDriveWith: .empty()))
+
+    let item = UIBarButtonItem(title: "로그아웃", style: .plain, target: self, action: nil)
+    self.navigationItem.leftBarButtonItem = item
+
+    let logOutTrigger = item.rx.tap
+      .flatMapLatest { _ in
+        Observable<Void>.create { [weak self] observer in
+          let alertController = UIAlertController(title: nil, message: "로그아웃하시겠습니까?", preferredStyle: .alert)
+          let action = UIAlertAction(title: "로그아웃", style: .destructive) {_ in
+            observer.onNext(Void())
+          }
+          let cancel = UIAlertAction(title: "취소", style: .cancel)
+          alertController.addAction(action)
+          alertController.addAction(cancel)
+          self?.present(alertController, animated: true)
+
+          return Disposables.create {
+            observer.onCompleted()
+          }
+        }
+      }
+      .debug("logoutTrigger")
+      .asDriverOnErrorJustComplete()
+
+
+    let input = CharacterSearchViewModel.Input(
+      toItemTrigger: self.rx.viewWillAppear.map { _ in }.asDriver(onErrorDriveWith: .empty()),
+      logout: logOutTrigger
+    )
     let output = viewModel.transform(input: input)
     output.toItem
       .drive()
       .disposed(by: disposeBag)
+
+    output.logout
+      .drive()
+      .disposed(by: disposeBag)
+  }
+
+  private func setAlert() {
+    let message = (AppData.email ?? "") + (AppData.nickname ?? "게스트") + "\n환영합니다."
+    let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+    alert.addAction(.init(title: "확인", style: .default))
+    self.present(alert, animated: true)
   }
 }

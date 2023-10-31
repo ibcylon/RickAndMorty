@@ -9,35 +9,48 @@ import Foundation
 
 import RxCocoa
 
+protocol CharacterSearchDelegate: AnyObject {
+  func logout()
+  func presentItem(item: RMCharacter)
+}
+
 final class CharacterSearchViewModel: ViewModelType {
-  private let navigator: CharacterListNavigatorType
   private let characterService: RMServiceType
-  private let navigationTrigger: Driver<Void>
-  
-  init(navigator: CharacterListNavigatorType,
-       characterService: RMServiceType,
-       navigationTrigger: Driver<Void>
+  private let navigationTrigger: Driver<RMCharacter>
+
+  var delegate: CharacterSearchDelegate?
+
+  init(characterService: RMServiceType,
+       navigationTrigger: Driver<RMCharacter>
   ) {
-    self.navigator = navigator
     self.characterService = characterService
     self.navigationTrigger = navigationTrigger
   }
 
   struct Input {
     let toItemTrigger: Driver<Void>
+    let logout: Driver<Void>
   }
 
   struct Output {
     let toItem: Driver<Void>
+    let logout: Driver<Void>
   }
 
   func transform(input: Input) -> Output {
     let toItem = self.navigationTrigger
-      .do(onNext: { [weak self] _ in
-        self?.navigator.presentItem()
+      .do(onNext: { [weak self] item in
+        self?.delegate?.presentItem(item: item)
+      }).map { _ in }
+
+    let logout = input.logout
+      .do(onNext:  { [weak self] in
+        self?.delegate?.logout()
       })
+
     return Output(
-      toItem: toItem
+      toItem: toItem,
+      logout: logout
     )
   }
 }
