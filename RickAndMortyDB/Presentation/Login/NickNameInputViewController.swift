@@ -22,6 +22,7 @@ final class NicknameInputViewController: UIViewController {
     field.layer.borderWidth = 0.5
     field.layer.borderColor = UIColor.black.cgColor
     field.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    field.becomeFirstResponder()
     return field
   }()
 
