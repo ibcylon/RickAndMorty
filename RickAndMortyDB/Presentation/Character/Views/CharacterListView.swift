@@ -86,6 +86,7 @@ class CharacterListView: UIView {
       footer.startAnimating()
       return footer
     }
+
     let pagingTrigger = collectionView.rx.didScroll
       .map { self.collectionView.needMorePage }
       .filter { $0 }
