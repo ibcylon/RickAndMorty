@@ -29,11 +29,16 @@ final class CharacterCoordinator: Coordinator {
   }
 
   func start() {
-    toSearch()
+    checkMemoryLeak()
   }
 
   // MARK: Private
 
+  private func checkMemoryLeak() {
+    let vc = MemoryLeakViewController()
+    vc.delegate = self
+    self.navigationController.viewControllers = [vc]
+  }
   private func toSearch() {
     let itemSelectedSubject = PublishSubject<RMCharacter>()
 
@@ -70,12 +75,23 @@ extension CharacterCoordinator: CharacterSearchDelegate {
   }
 
   func logout() {
+    self.navigationController.viewControllers = []
     self.delegate?.logout()
+  }
+
+  func toMemoryLeak() {
+    self.navigationController.popViewController(animated: true)
   }
 }
 
 extension CharacterCoordinator: CharacterDetailDelegate {
   func toList() {
     self.navigationController.popViewController(animated: true)
+  }
+}
+
+extension CharacterCoordinator: MemoryLeakViewControllerDelegate {
+  func memoryLeakViewControllerButtonTap() {
+    toSearch()
   }
 }

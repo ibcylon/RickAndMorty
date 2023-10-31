@@ -26,7 +26,7 @@ final class CharacterDetailVIewController: UIViewController {
   }
 
   deinit {
-    RMLogger.dataLogger.debug("\(#function) \(self)")
+    RMLogger.dataLogger.debug("fasfkljasldfj \(self)")
   }
   
   override func viewDidLoad() {

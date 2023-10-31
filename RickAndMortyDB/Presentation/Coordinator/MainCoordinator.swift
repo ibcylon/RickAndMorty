@@ -15,7 +15,6 @@ final class MainCoordinator: Coordinator {
   var navigationController: UINavigationController
 
   var childCoordinators: [Coordinator]
-  var tabBar: RMTabBarController? = nil
 
   var delegate: MainCoordinatorDelegate?
 
@@ -27,13 +26,9 @@ final class MainCoordinator: Coordinator {
   func start() {
     self.navigationController.viewControllers.removeAll()
 
-    if self.tabBar == nil {
-      let rmTabBar = RMTabBarController()
-      makeTabBarItem(tabBar: rmTabBar)
-      self.tabBar = rmTabBar
-    }
-    guard let tabBar = self.tabBar else { return }
-    self.navigationController.viewControllers = [tabBar]
+    let rmTabBar = RMTabBarController()
+    makeTabBarItem(tabBar: rmTabBar)
+    self.navigationController.viewControllers = [rmTabBar]
   }
 
   private func makeTabBarItem(tabBar: RMTabBarController) {
@@ -64,7 +59,7 @@ final class MainCoordinator: Coordinator {
 
 extension MainCoordinator: CharacterCoordinatorDelegate {
   func logout() {
-    self.delegate?.logout(coordinator: self)
     self.childCoordinators = []
+    self.delegate?.logout(coordinator: self)
   }
 }

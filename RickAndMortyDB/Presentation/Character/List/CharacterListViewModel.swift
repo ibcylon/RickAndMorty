@@ -18,6 +18,10 @@ final class CharacterListViewModel: ViewModelType {
     self.service = service
     self.navigationObserver = observer
   }
+
+  deinit {
+    RMLogger.dataLogger.debug("[deinit] \(String(describing: self))")
+  }
   
   struct Input {
     let trigger: Driver<Void>

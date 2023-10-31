@@ -26,9 +26,8 @@ final class CharacterSearchViewController: UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
 
-
   deinit {
-    RMLogger.dataLogger.debug("\(#function) \(self)")
+    RMLogger.dataLogger.debug("[deinit] \(self)")
   }
 
   override func viewDidLoad() {
@@ -36,7 +35,7 @@ final class CharacterSearchViewController: UIViewController {
 
     setUpViews()
     bind()
-    setAlert()
+//    setAlert()
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -60,13 +59,22 @@ final class CharacterSearchViewController: UIViewController {
     self.characterListView.bind()
 
     let item = UIBarButtonItem(title: "로그아웃", style: .plain, target: self, action: nil)
-    self.navigationItem.leftBarButtonItem = item
+    self.navigationItem.rightBarButtonItem = item
 
-    let logOutTrigger = item.rx.tap
-      .flatMapLatest { _ in
-        Observable<Void>.create { [weak self] observer in
+    let back = UIBarButtonItem(
+      image: UIImage(systemName: "chevron.left"),
+      style: .plain,
+      target: nil,
+      action: nil)
+    self.navigationItem.leftBarButtonItem = back
+    let backButtonTrigger = back.rx.tap.asDriver()
+
+    let logOutTrigger =
+    item.rx.tap
+      .flatMapLatest { [weak self] _ in
+        Observable<Void>.create { observer in
           let alertController = UIAlertController(title: nil, message: "로그아웃하시겠습니까?", preferredStyle: .alert)
-          let action = UIAlertAction(title: "로그아웃", style: .destructive) {_ in
+          let action = UIAlertAction(title: "로그아웃", style: .destructive) { _ in
             observer.onNext(Void())
           }
           let cancel = UIAlertAction(title: "취소", style: .cancel)
@@ -79,13 +87,12 @@ final class CharacterSearchViewController: UIViewController {
           }
         }
       }
-      .debug("logoutTrigger")
       .asDriverOnErrorJustComplete()
-
 
     let input = CharacterSearchViewModel.Input(
       toItemTrigger: self.rx.viewWillAppear.map { _ in }.asDriver(onErrorDriveWith: .empty()),
-      logout: logOutTrigger
+      logout: logOutTrigger,
+      back: backButtonTrigger
     )
     let output = viewModel.transform(input: input)
     output.toItem
@@ -93,6 +100,10 @@ final class CharacterSearchViewController: UIViewController {
       .disposed(by: disposeBag)
 
     output.logout
+      .drive()
+      .disposed(by: disposeBag)
+
+    output.back
       .drive()
       .disposed(by: disposeBag)
   }

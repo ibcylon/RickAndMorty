@@ -8,7 +8,9 @@
 import UIKit
 
 final class RMTabBarController: UITabBarController {
-
+  deinit {
+    RMLogger.dataLogger.debug("[deinit] \(self)")
+  }
   enum Feature: String {
     case episode
     case character

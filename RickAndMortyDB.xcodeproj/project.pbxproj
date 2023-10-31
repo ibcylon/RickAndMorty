@@ -63,6 +63,7 @@
 		D5739F462AF1020700C60C7F /* CharacterCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5739F452AF1020700C60C7F /* CharacterCoordinator.swift */; };
 		D5739F482AF10DED00C60C7F /* UITabBarItem+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5739F472AF10DED00C60C7F /* UITabBarItem+Util.swift */; };
 		D5739F4A2AF11BCC00C60C7F /* RMButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5739F492AF11BCC00C60C7F /* RMButton.swift */; };
+		D5739F4C2AF1299700C60C7F /* MemoryLeakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5739F4B2AF1299700C60C7F /* MemoryLeakViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +129,7 @@
 		D5739F452AF1020700C60C7F /* CharacterCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterCoordinator.swift; sourceTree = "<group>"; };
 		D5739F472AF10DED00C60C7F /* UITabBarItem+Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarItem+Util.swift"; sourceTree = "<group>"; };
 		D5739F492AF11BCC00C60C7F /* RMButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMButton.swift; sourceTree = "<group>"; };
+		D5739F4B2AF1299700C60C7F /* MemoryLeakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLeakViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,6 +237,7 @@
 				D51F69892AB05CE2008ADBA3 /* List */,
 				D5571D662AAB92A500F676F5 /* Views */,
 				D5571D1F2AA4867100F676F5 /* Detail */,
+				D5739F4B2AF1299700C60C7F /* MemoryLeakViewController.swift */,
 			);
 			path = Character;
 			sourceTree = "<group>";
@@ -531,6 +534,7 @@
 				D5739F3A2AF0EF0400C60C7F /* EmailInputViewController.swift in Sources */,
 				D5739F482AF10DED00C60C7F /* UITabBarItem+Util.swift in Sources */,
 				D5739F352AEE8C9100C60C7F /* OnBoardingCoordinator.swift in Sources */,
+				D5739F4C2AF1299700C60C7F /* MemoryLeakViewController.swift in Sources */,
 				D5571D6A2AAB931300F676F5 /* UICollectionView+Util.swift in Sources */,
 				D5571D6C2AAB94EC00F676F5 /* RMCharacterCollectionViewCellViewModel.swift in Sources */,
 				D5739F332AEE8C8500C60C7F /* MainCoordinator.swift in Sources */,
