@@ -61,14 +61,6 @@ final class CharacterSearchViewController: UIViewController {
     let item = UIBarButtonItem(title: "로그아웃", style: .plain, target: self, action: nil)
     self.navigationItem.rightBarButtonItem = item
 
-    let back = UIBarButtonItem(
-      image: UIImage(systemName: "chevron.left"),
-      style: .plain,
-      target: nil,
-      action: nil)
-    self.navigationItem.leftBarButtonItem = back
-    let backButtonTrigger = back.rx.tap.asDriver()
-
     let logOutTrigger =
     item.rx.tap
       .flatMapLatest { [weak self] _ in
@@ -91,8 +83,7 @@ final class CharacterSearchViewController: UIViewController {
 
     let input = CharacterSearchViewModel.Input(
       toItemTrigger: self.rx.viewWillAppear.map { _ in }.asDriver(onErrorDriveWith: .empty()),
-      logout: logOutTrigger,
-      back: backButtonTrigger
+      logout: logOutTrigger
     )
     let output = viewModel.transform(input: input)
     output.toItem
@@ -100,10 +91,6 @@ final class CharacterSearchViewController: UIViewController {
       .disposed(by: disposeBag)
 
     output.logout
-      .drive()
-      .disposed(by: disposeBag)
-
-    output.back
       .drive()
       .disposed(by: disposeBag)
   }

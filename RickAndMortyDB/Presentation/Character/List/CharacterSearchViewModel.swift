@@ -12,7 +12,6 @@ import RxCocoa
 protocol CharacterSearchDelegate: AnyObject {
   func logout()
   func presentItem(item: RMCharacter)
-  func toMemoryLeak()
 }
 
 final class CharacterSearchViewModel: ViewModelType {
@@ -35,13 +34,11 @@ final class CharacterSearchViewModel: ViewModelType {
   struct Input {
     let toItemTrigger: Driver<Void>
     let logout: Driver<Void>
-    let back: Driver<Void>
   }
 
   struct Output {
     let toItem: Driver<Void>
     let logout: Driver<Void>
-    let back: Driver<Void>
   }
 
   func transform(input: Input) -> Output {
@@ -56,15 +53,9 @@ final class CharacterSearchViewModel: ViewModelType {
         self?.delegate?.logout()
       })
 
-    let back = input.back
-    .do(onNext: { [weak self] in
-      self?.delegate?.toMemoryLeak()
-    })
-
     return Output(
       toItem: toItem,
-      logout: logout,
-      back: back
+      logout: logout
       )
     }
 }
